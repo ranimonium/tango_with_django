@@ -18,5 +18,7 @@ def index(request):
 	return render_to_response('rango/index.html', context_dict, context)
 
 def about(request):
-	return HttpResponse("Rango says: this the fcking about page <a href='/rango/'>Index</a>")
+	context = RequestContext(request)
+	context_dict = {'boldmessage' : "this the fcking about page"}
+	return render_to_response('rango/about.html', context_dict, context)
 
