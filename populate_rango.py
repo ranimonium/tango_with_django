@@ -8,7 +8,7 @@ def populate():
 
 	add_page(cat=python_cat,
 		title="Official Python Tutorial",
-		url="http://docs.python.prg/2/tutorial/")
+		url="http://docs.python.org/2/tutorial/")
 
 	add_page(cat=python_cat,
 		title="How To Think Like a Computer Scientist",
