@@ -90,3 +90,6 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#page where users trying to access pages requiring login will be redirected at
+LOGIN_URL = '/rango/login/'
