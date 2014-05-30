@@ -7,6 +7,7 @@ from rango.forms import CategoryForm
 from rango.forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 def index(request):
 	context = RequestContext(request)
@@ -19,11 +20,54 @@ def index(request):
 	for category in category_list:
 		category.url = category.name.replace(' ', '_')
 
+	page_list = Page.objects.order_by('-views')[:5]
+	context_dict['pages'] = page_list
+
+	# # Obtain response object early so we can add cookie information
+	# response = render_to_response('rango/index.html', context_dict, context)
+
+	# # Get the number of visits to the site
+	# # If the cookie exists, the value returned is casted to an integer
+	# # If the cookie doesn't exist, we default to zero and cast that
+	# visits = int(request.COOKIES.get('visits', '0'))
+
+	# if 'last_visit' in request.COOKIES:
+	# 	last_visit = request.COOKIES['last_visit']
+	# 	last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+
+	# 	if (datetime.now() - last_visit_time).days > 0:
+	# 		response.set_cookie('visits', visits+1)
+	# 		response.set_cookie('last_visit', datetime.now())
+	# else:
+	# 	response.set_cookie('last_visit', datetime.now())
+
+	# return response
+
+	if request.session.get('last_visit'):
+		# The session has a value for the last visit
+		last_visit_time = request.session.get('last_visit')
+		visits = request.session.get('visits', 0)
+
+		if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
+			request.session['visits'] = visits + 1
+			request.session['last_visit'] = str(datetime.now())
+	else:
+		# The get returns None, and the session does not have a value for the last visit.
+		request.session['last_visit'] = str(datetime.now())
+		request.session['visits'] = 1
+
+	# Render and return the rendered response back to the user.
 	return render_to_response('rango/index.html', context_dict, context)
 
 def about(request):
 	context = RequestContext(request)
 	context_dict = {'boldmessage' : "this the fcking about page"}
+
+	if request.session.get('visits'):
+		context_dict['count'] = request.session.get('visits')
+	else:
+		context_dict['count'] = 0
+		
 	return render_to_response('rango/about.html', context_dict, context)
 
 def category(request, category_name_url):

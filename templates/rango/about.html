@@ -6,7 +6,9 @@
 
 {% block body_block %}
 		<h1>Rango says...</h1>
+		You have visited this page {{ count }} time/s.
 		<strong> {{ boldmessage }} </strong>
 		<a href="/rango/">Index</a><br />
 		<img src="{% static "rango.jpg" %}" alt="Picture of Rango" />
+
 {% endblock %}
